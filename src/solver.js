@@ -46,6 +46,12 @@ export const solverRules = [
     run: globalFrontierRule,
   },
   {
+    id: "unconstrained-count",
+    label: "非境界残数",
+    description: "数字に接していない未確定マスを、境界側で必要な最小地雷数と残り地雷数から安全確定する。",
+    run: unconstrainedCountRule,
+  },
+  {
     id: "global-count",
     label: "全体残数",
     description: "残り地雷数と未確定マス数が一致する場合や、残り地雷がゼロの場合を処理する。",
@@ -263,6 +269,34 @@ function globalFrontierRule(game) {
     if (mineCount === combined.solutionCount) actions.push(action("flag", index, "global-frontier"));
   }
   return actions;
+}
+
+function unconstrainedCountRule(game) {
+  const hiddenIndexes = game.cells.filter((cell) => cell.state === CELL.HIDDEN).map((cell) => cell.index);
+  const components = frontierComponents(game);
+  if (components.some((component) => component.variables.length > MAX_ENUMERATION_CELLS)) return [];
+
+  const frontierVariables = new Set(components.flatMap((component) => component.variables));
+  const unconstrained = hiddenIndexes.filter((index) => !frontierVariables.has(index));
+  if (unconstrained.length === 0) return [];
+
+  let minFrontierMines = 0;
+  let maxFrontierMines = 0;
+  for (const component of components) {
+    const mineCounts = enumerateComponent(component).map((solution) => solution.reduce((sum, value) => sum + value, 0));
+    if (mineCounts.length === 0) return [];
+    minFrontierMines += Math.min(...mineCounts);
+    maxFrontierMines += Math.max(...mineCounts);
+  }
+
+  const minesLeft = remainingMines(game);
+  if (minFrontierMines === minesLeft) {
+    return unconstrained.map((index) => action("reveal", index, "unconstrained-count"));
+  }
+  if (maxFrontierMines + unconstrained.length === minesLeft) {
+    return unconstrained.map((index) => action("flag", index, "unconstrained-count"));
+  }
+  return [];
 }
 
 function combineComponentSolutions(components, targetMines) {

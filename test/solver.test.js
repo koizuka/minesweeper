@@ -139,6 +139,34 @@ test("global-frontier filters local solutions that cannot use the remaining mine
   ]);
 });
 
+test("unconstrained-count reveals cells that are outside the frontier when remaining mines are needed by frontier cells", () => {
+  const game = board(4, 4, 1, [
+    "H H R R",
+    "H H R R",
+    "H H 1 R",
+    "R R R R",
+  ]);
+
+  const step = solveStep(game, [
+    "local-count",
+    "subset",
+    "constraint-closure",
+    "overlap-bounds",
+    "cover-upper-bound",
+    "exact-frontier",
+    "global-frontier",
+    "unconstrained-count",
+  ]);
+
+  assert.equal(step.rule.id, "unconstrained-count");
+  assert.deepEqual(actionPairs(step.actions), [
+    ["reveal", 0],
+    ["reveal", 1],
+    ["reveal", 4],
+    ["reveal", 8],
+  ]);
+});
+
 test("global-count reveals every hidden cell when no mines remain", () => {
   const game = board(3, 2, 1, [
     "R R H",

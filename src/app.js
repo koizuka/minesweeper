@@ -1,5 +1,5 @@
-import { applySolverActions, CELL, createGame, LEVELS, remainingMines, revealCell } from "./game.js";
-import { analyzeBoard, solveStep, solverRules } from "./solver.js";
+import { applySolverActions, CELL, createGame, LEVELS, remainingMines, revealCell } from "./game.js?v=20260517-2";
+import { analyzeBoard, solveStep, solverRules } from "./solver.js?v=20260517-2";
 
 const state = {
   levelId: "intermediate",

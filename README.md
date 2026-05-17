@@ -56,6 +56,7 @@ Current rules:
 - Covering upper bounds across multiple intersecting constraints
 - Exact frontier enumeration
 - Frontier enumeration filtered by remaining mine count
+- Remaining mine count against cells outside the frontier
 - Global remaining mine count extremes
 
 See `AGENTS.md` for implementation notes and handoff guidance.

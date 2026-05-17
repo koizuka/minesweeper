@@ -40,7 +40,8 @@ Current rule order:
 5. `cover-upper-bound`: covers one constraint with multiple disjoint upper-bound intersections.
 6. `exact-frontier`: enumerates small connected frontier components.
 7. `global-frontier`: filters frontier solutions by the board's remaining mine count when all hidden cells are constrained.
-8. `global-count`: handles remaining mine count extremes.
+8. `unconstrained-count`: uses frontier min/max mine counts to resolve hidden cells outside all numeric constraints.
+9. `global-count`: handles remaining mine count extremes.
 
 ## Seeds And Reload Behavior
 
