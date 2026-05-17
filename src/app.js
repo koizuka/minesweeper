@@ -12,7 +12,8 @@ const state = {
 };
 
 const app = document.querySelector("#app");
-resetGame();
+const initialSeed = seedFromLocation();
+resetGame(initialSeed ? { seed: initialSeed } : {});
 
 function render() {
   state.analysis = analyzeBoard(state.game, [...state.enabledRules]);
@@ -28,6 +29,10 @@ function render() {
             ${Object.entries(LEVELS).map(([id, level]) => `<option value="${id}" ${id === state.levelId ? "selected" : ""}>${level.label}</option>`).join("")}
           </select>
           <button id="newGame" type="button">New</button>
+          <form class="seed-control" id="seedForm">
+            <input id="seedInput" type="number" min="1" max="2147483647" step="1" value="${state.seed ?? ""}" aria-label="Seed" />
+            <button id="loadSeed" type="submit">Seed</button>
+          </form>
           <button id="solveOnce" type="button">Step</button>
           <label class="toggle"><input id="autoSolve" type="checkbox" ${state.autoSolve ? "checked" : ""}>Auto</label>
         </div>
@@ -112,6 +117,12 @@ function renderInsight() {
 
 function bindEvents() {
   document.querySelector("#newGame").addEventListener("click", () => resetGame({ freshSeed: true }));
+  document.querySelector("#seedForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const seed = normalizeSeed(document.querySelector("#seedInput").value);
+    if (!seed) return;
+    resetGame({ seed });
+  });
   document.querySelector("#solveOnce").addEventListener("click", () => runSolverStep());
   document.querySelector("#level").addEventListener("change", (event) => {
     state.levelId = event.target.value;
@@ -145,12 +156,15 @@ function bindEvents() {
 
 function resetGame(options = {}) {
   const config = LEVELS[state.levelId];
-  const seed = options.freshSeed ? createSeed() : seedForLevel(state.levelId);
-  const round = options.freshSeed || !hasStoredSeed(state.levelId)
+  const seed = options.seed ?? (options.freshSeed ? createSeed() : seedForLevel(state.levelId));
+  const round = options.seed
+    ? startAndSpoil(config, state.enabledRules, seed)
+    : options.freshSeed || !hasStoredSeed(state.levelId)
     ? createGuessRound(config, state.enabledRules, seed)
     : startAndSpoil(config, state.enabledRules, seed);
   state.seed = round.seed;
   storeSeed(state.levelId, state.seed);
+  syncSeedToLocation(state.seed);
   state.game = round.game;
   state.log = [`Seed ${state.seed}`, ...round.log];
   render();
@@ -197,6 +211,22 @@ function seedForLevel(levelId) {
   const stored = Number(localStorage.getItem(seedKey(levelId)));
   if (Number.isSafeInteger(stored) && stored > 0) return stored;
   return createSeed();
+}
+
+function seedFromLocation() {
+  return normalizeSeed(new URLSearchParams(window.location.search).get("seed"));
+}
+
+function syncSeedToLocation(seed) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("seed", String(seed));
+  window.history.replaceState(null, "", url);
+}
+
+function normalizeSeed(value) {
+  const seed = Number(value);
+  if (!Number.isSafeInteger(seed) || seed < 1 || seed > 0x7fffffff) return null;
+  return seed;
 }
 
 function hasStoredSeed(levelId) {

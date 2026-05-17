@@ -117,8 +117,15 @@ h1 {
   flex-wrap: wrap;
 }
 
+.seed-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .controls button,
 .controls select,
+.seed-control input,
 .toggle {
   height: 34px;
   border: 1px solid #bbc5cf;
@@ -126,6 +133,11 @@ h1 {
   background: white;
   color: #1e252b;
   padding: 0 12px;
+}
+
+.seed-control input {
+  width: 118px;
+  padding: 0 8px;
 }
 
 .controls button {
@@ -363,6 +375,18 @@ h1 {
 
   .controls {
     margin-left: auto;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .seed-control {
+    flex: 1 1 170px;
+  }
+
+  .seed-control input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
   }
 
   .workspace {

@@ -41,6 +41,7 @@ The test suite uses Node's built-in `node:test` runner and covers the game logic
 - If `Auto` is enabled, the solver repeatedly applies deterministic rules until it gets stuck.
 - `New` searches for a board that still leaves a `Guess` under the current rule set.
 - Browser reload reuses the stored seed and reruns the solver on the same board, which makes solver improvements easy to compare.
+- Enter a seed in the toolbar, or open `?seed=2036220023`, to reproduce a specific board exactly.
 
 ## Solver Rules
 
