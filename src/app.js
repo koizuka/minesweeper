@@ -1,5 +1,5 @@
-import { applySolverActions, CELL, createGame, LEVELS, remainingMines, revealCell } from "./game.js?v=20260517-2";
-import { analyzeBoard, solveStep, solverRules } from "./solver.js?v=20260517-2";
+import { applySolverActions, CELL, createGame, LEVELS, remainingMines, revealCell } from "./game.js?v=20260517-3";
+import { analyzeBoard, solveStep, solverRules } from "./solver.js?v=20260517-3";
 
 const state = {
   levelId: "intermediate",
@@ -20,8 +20,13 @@ function render() {
   app.innerHTML = `
     <main class="shell state-${viewState()}">
       <section class="topbar">
-        <div>
+        <div class="brand">
           <h1>Minesweeper Spoiled+</h1>
+          <a class="github-link" href="https://github.com/koizuka/minesweeper" target="_blank" rel="noreferrer" aria-label="GitHub repository">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.4.7-4.1-1.4-4.1-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.3 11.3 0 0 1 6 0C17.3 4.9 18.3 5.2 18.3 5.2c.6 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z" />
+            </svg>
+          </a>
           <p>確定できる盤面はソルバーが奪い、人間は最後に残った賭けだけを打つ。</p>
         </div>
         <div class="controls">
@@ -30,7 +35,7 @@ function render() {
           </select>
           <button id="newGame" type="button">New</button>
           <form class="seed-control" id="seedForm">
-            <input id="seedInput" type="number" min="1" max="2147483647" step="1" value="${state.seed ?? ""}" aria-label="Seed" />
+            <input id="seedInput" type="text" inputmode="numeric" pattern="[0-9]*" value="${state.seed ?? ""}" aria-label="Seed" />
             <button id="loadSeed" type="submit">Seed</button>
           </form>
           <button id="solveOnce" type="button">Step</button>
@@ -122,6 +127,16 @@ function bindEvents() {
     const seed = normalizeSeed(document.querySelector("#seedInput").value);
     if (!seed) return;
     resetGame({ seed });
+  });
+  const seedInput = document.querySelector("#seedInput");
+  seedInput.addEventListener("pointerdown", (event) => {
+    if (document.activeElement === event.currentTarget) return;
+    event.preventDefault();
+    event.currentTarget.focus();
+    event.currentTarget.select();
+  });
+  seedInput.addEventListener("focus", (event) => {
+    event.target.select();
   });
   document.querySelector("#solveOnce").addEventListener("click", () => runSolverStep());
   document.querySelector("#level").addEventListener("change", (event) => {

@@ -104,6 +104,36 @@ h1 {
   letter-spacing: 0;
 }
 
+.brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+}
+
+.brand p {
+  flex-basis: 100%;
+}
+
+.github-link {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: #24292f;
+  border-radius: 999px;
+}
+
+.github-link:hover {
+  background: color-mix(in srgb, var(--state-accent) 14%, transparent);
+}
+
+.github-link svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
 .topbar p {
   margin-top: 2px;
   color: #5d6975;
@@ -142,6 +172,18 @@ h1 {
 
 .controls button {
   cursor: pointer;
+}
+
+#newGame {
+  background: var(--state-accent);
+  border-color: var(--state-accent);
+  color: white;
+  font-weight: 800;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--state-accent) 72%, black);
+}
+
+#newGame:hover {
+  filter: brightness(0.95);
 }
 
 .toggle {
@@ -373,20 +415,45 @@ h1 {
     font-size: 19px;
   }
 
+  .brand {
+    gap: 0 6px;
+  }
+
+  .github-link {
+    width: 28px;
+    height: 28px;
+  }
+
   .controls {
     margin-left: auto;
     width: 100%;
     justify-content: flex-start;
+    gap: 5px;
   }
 
   .seed-control {
-    flex: 1 1 170px;
+    order: 2;
+    flex: 0 0 170px;
+    width: 170px;
   }
 
   .seed-control input {
-    flex: 1 1 auto;
-    min-width: 0;
-    width: auto;
+    flex: 0 0 auto;
+    width: 10.5ch;
+    padding: 0 6px;
+  }
+
+  .controls button,
+  .controls select,
+  .toggle {
+    padding: 0 9px;
+  }
+
+  #level,
+  #newGame,
+  #solveOnce,
+  .toggle {
+    order: 1;
   }
 
   .workspace {
