@@ -88,6 +88,23 @@ test("constraint-closure reuses derived constraints to reveal cells beyond one s
   ]);
 });
 
+test("overlap-bounds derives mines and safes from partially overlapping constraints", () => {
+  const game = board(5, 3, 3, [
+    "H H H H R",
+    "H 2 3 R R",
+    "R F R R R",
+  ]);
+
+  const step = solveStep(game, ["local-count", "subset", "constraint-closure", "overlap-bounds"]);
+
+  assert.equal(step.rule.id, "overlap-bounds");
+  assert.deepEqual(actionPairs(step.actions), [
+    ["reveal", 0],
+    ["flag", 3],
+    ["reveal", 5],
+  ]);
+});
+
 test("global-frontier filters local solutions that cannot use the remaining mine count", () => {
   const game = board(5, 3, 6, [
     "H H H H R",

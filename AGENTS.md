@@ -36,9 +36,10 @@ Current rule order:
 1. `local-count`: standard adjacent count saturation.
 2. `subset`: one-step subset difference reasoning.
 3. `constraint-closure`: repeatedly derives subset-difference constraints and reuses them.
-4. `exact-frontier`: enumerates small connected frontier components.
-5. `global-frontier`: filters frontier solutions by the board's remaining mine count when all hidden cells are constrained.
-6. `global-count`: handles remaining mine count extremes.
+4. `overlap-bounds`: uses min/max mine counts across partially overlapping constraints.
+5. `exact-frontier`: enumerates small connected frontier components.
+6. `global-frontier`: filters frontier solutions by the board's remaining mine count when all hidden cells are constrained.
+7. `global-count`: handles remaining mine count extremes.
 
 ## Seeds And Reload Behavior
 

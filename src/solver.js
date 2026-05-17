@@ -22,6 +22,12 @@ export const solverRules = [
     run: constraintClosureRule,
   },
   {
+    id: "overlap-bounds",
+    label: "重なり上下限",
+    description: "重なり合う2つの制約で、片方から交差部の最大・最小地雷数を縛り、差分側を確定する。",
+    run: overlapBoundsRule,
+  },
+  {
     id: "exact-frontier",
     label: "境界完全列挙",
     description: "開いた数字に接する未確定マスを制約充足で列挙し、全解で同じマスを確定する。",
@@ -120,6 +126,36 @@ function constraintClosureRule(game) {
     }
     return [];
   });
+}
+
+function overlapBoundsRule(game) {
+  const constraints = closeConstraints(constraintsFromBoard(game));
+  const actions = [];
+
+  for (let i = 0; i < constraints.length; i += 1) {
+    for (let j = 0; j < constraints.length; j += 1) {
+      if (i === j) continue;
+      const a = constraints[i];
+      const b = constraints[j];
+      const overlap = b.unknowns.filter((index) => a.unknownSet.has(index));
+      const bOnly = b.unknowns.filter((index) => !a.unknownSet.has(index));
+      if (overlap.length === 0 || bOnly.length === 0) continue;
+
+      const minOverlapFromA = Math.max(0, a.minesNeeded - (a.unknowns.length - overlap.length));
+      const maxOverlapFromA = Math.min(overlap.length, a.minesNeeded);
+      const minBOnly = b.minesNeeded - maxOverlapFromA;
+      const maxBOnly = b.minesNeeded - minOverlapFromA;
+
+      if (minBOnly === bOnly.length) {
+        bOnly.forEach((index) => actions.push(action("flag", index, "overlap-bounds")));
+      }
+      if (maxBOnly === 0) {
+        bOnly.forEach((index) => actions.push(action("reveal", index, "overlap-bounds")));
+      }
+    }
+  }
+
+  return actions;
 }
 
 function exactFrontierRule(game) {

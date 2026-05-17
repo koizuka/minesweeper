@@ -38,6 +38,7 @@ Current rules:
 - Local count saturation
 - Subset reasoning
 - Derived constraint closure
+- Overlap bounds between partially intersecting constraints
 - Exact frontier enumeration
 - Frontier enumeration filtered by remaining mine count
 - Global remaining mine count extremes
