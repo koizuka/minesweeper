@@ -1,0 +1,353 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #eef1f4;
+  color: #1e252b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+.shell {
+  --state-bg: #e7ebef;
+  --state-band: #f9fafb;
+  --state-line: #d7dde3;
+  --state-ink: #39434d;
+  --state-accent: #6b7280;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--state-bg);
+}
+
+.state-ready {
+  --state-bg: #e7ebef;
+  --state-band: #f9fafb;
+  --state-line: #d7dde3;
+  --state-ink: #39434d;
+  --state-accent: #6b7280;
+}
+
+.state-guess {
+  --state-bg: #f2eadc;
+  --state-band: #fff7e8;
+  --state-line: #e0bd76;
+  --state-ink: #553d16;
+  --state-accent: #d18400;
+}
+
+.state-spoiling {
+  --state-bg: #e7f1ee;
+  --state-band: #f1fbf7;
+  --state-line: #8fc6b1;
+  --state-ink: #1f5144;
+  --state-accent: #24856d;
+}
+
+.state-solved {
+  --state-bg: #e5f4e8;
+  --state-band: #effbf1;
+  --state-line: #74b97c;
+  --state-ink: #20572b;
+  --state-accent: #2f8a3e;
+}
+
+.state-lost {
+  --state-bg: #f6e1df;
+  --state-band: #fff0ef;
+  --state-line: #d7837b;
+  --state-ink: #7b2424;
+  --state-accent: #b83232;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 14px;
+  background: var(--state-band);
+  border-bottom: 1px solid var(--state-line);
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 20px;
+  letter-spacing: 0;
+}
+
+.topbar p {
+  margin-top: 2px;
+  color: #5d6975;
+  font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.controls button,
+.controls select,
+.toggle {
+  height: 34px;
+  border: 1px solid #bbc5cf;
+  border-radius: 6px;
+  background: white;
+  color: #1e252b;
+  padding: 0 12px;
+}
+
+.controls button {
+  cursor: pointer;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 260px minmax(320px, 1fr) 260px;
+  grid-template-areas: "rules board insight";
+  min-height: 0;
+}
+
+.panel {
+  grid-area: rules;
+  padding: 18px;
+  background: var(--state-band);
+  border-right: 1px solid var(--state-line);
+  overflow: auto;
+}
+
+.insight {
+  grid-area: insight;
+  border-right: 0;
+  border-left: 1px solid var(--state-line);
+}
+
+.panel h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #66717d;
+  margin: 0 0 12px;
+  letter-spacing: 0;
+}
+
+.rule {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #e2e7ec;
+}
+
+.rule strong {
+  display: block;
+  font-size: 14px;
+}
+
+.rule small,
+.hint,
+.log,
+.actions {
+  color: #66717d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.board-wrap {
+  grid-area: board;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  place-items: center;
+  align-content: start;
+  gap: 14px;
+  padding: 16px 20px 20px;
+  overflow: auto;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--state-bg) 78%, white), var(--state-bg));
+}
+
+.status {
+  width: min(100%, calc(var(--cols, 16) * 34px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--state-ink);
+  font-weight: 700;
+  padding: 10px 12px;
+  background: var(--state-band);
+  border: 1px solid var(--state-line);
+  border-left: 6px solid var(--state-accent);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgb(50 60 70 / 10%);
+}
+
+.board {
+  --cell: clamp(24px, min(4.5vw, 4.5vh), 34px);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-template-rows: repeat(var(--rows), var(--cell));
+  gap: 2px;
+  padding: 8px;
+  background: #b7c0c8;
+  border: 2px solid var(--state-line);
+  border-radius: 8px;
+  box-shadow: 0 14px 30px rgb(60 72 84 / 18%), 0 0 0 4px color-mix(in srgb, var(--state-accent) 14%, transparent);
+}
+
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  border: 0;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--cell) * 0.42);
+  font-weight: 800;
+  color: #42505c;
+  background: linear-gradient(#f9fbfc, #dce3e8);
+  box-shadow: inset 0 -2px 0 rgb(90 105 118 / 18%);
+  cursor: pointer;
+  user-select: none;
+}
+
+.cell.hidden {
+  color: #66717d;
+}
+
+.cell.flagged {
+  color: #9b1c1c;
+  background: linear-gradient(#fff1ee, #f5cfc8);
+  box-shadow: inset 0 -2px 0 rgb(140 45 35 / 20%);
+}
+
+.flag-icon {
+  width: calc(var(--cell) * 0.76);
+  height: calc(var(--cell) * 0.76);
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 75%));
+}
+
+.flag-pole,
+.flag-base {
+  fill: none;
+  stroke: #4f5f6d;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.flag-cloth {
+  fill: #e3362d;
+  stroke: #8f1d18;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.cell.revealed {
+  background: #f4f6f7;
+  box-shadow: none;
+  cursor: default;
+}
+
+.cell.solver-safe {
+  outline: 2px solid #2a9d8f;
+}
+
+.cell.solver-mine {
+  outline: 2px solid #d35d3f;
+}
+
+.cell.mine-hit {
+  background: #b83232;
+  color: white;
+}
+
+.cell[data-n="1"] { color: #2364aa; }
+.cell[data-n="2"] { color: #248232; }
+.cell[data-n="3"] { color: #c03a2b; }
+.cell[data-n="4"] { color: #5b4aa0; }
+.cell[data-n="5"] { color: #8f3f2b; }
+.cell[data-n="6"] { color: #197278; }
+.cell[data-n="7"] { color: #242423; }
+.cell[data-n="8"] { color: #6b7280; }
+
+.actions,
+.log {
+  padding-left: 18px;
+  margin: 8px 0 20px;
+}
+
+.win {
+  color: var(--state-accent);
+  font-weight: 700;
+}
+
+.lose {
+  color: var(--state-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 920px) {
+  .topbar {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .topbar p {
+    display: none;
+  }
+
+  h1 {
+    font-size: 19px;
+  }
+
+  .controls {
+    margin-left: auto;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "board"
+      "insight"
+      "rules";
+  }
+
+  .panel,
+  .insight {
+    border-right: 0;
+    border-bottom: 1px solid var(--state-line);
+  }
+
+  .insight {
+    border-left: 0;
+  }
+}
