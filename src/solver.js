@@ -28,6 +28,12 @@ export const solverRules = [
     run: overlapBoundsRule,
   },
   {
+    id: "cover-upper-bound",
+    label: "被覆上限",
+    description: "1つの制約を複数の交差部上限で覆い、上限合計が必要地雷数と一致する場合に外側を安全確定する。",
+    run: coverUpperBoundRule,
+  },
+  {
     id: "exact-frontier",
     label: "境界完全列挙",
     description: "開いた数字に接する未確定マスを制約充足で列挙し、全解で同じマスを確定する。",
@@ -156,6 +162,67 @@ function overlapBoundsRule(game) {
   }
 
   return actions;
+}
+
+function coverUpperBoundRule(game) {
+  const constraints = closeConstraints(constraintsFromBoard(game));
+  const actions = [];
+
+  for (const base of constraints) {
+    const candidates = constraints
+      .filter((constraint) => constraint !== base)
+      .map((constraint) => {
+        const group = constraint.unknowns.filter((index) => base.unknownSet.has(index));
+        const outside = constraint.unknowns.filter((index) => !base.unknownSet.has(index));
+        return {
+          constraint,
+          group,
+          groupSet: new Set(group),
+          outside,
+          maxMines: Math.min(group.length, constraint.minesNeeded),
+        };
+      })
+      .filter((candidate) => candidate.group.length > 0 && candidate.outside.length > 0 && candidate.maxMines > 0);
+
+    findDisjointCovers(base, candidates).forEach((cover) => {
+      const maxSum = cover.reduce((sum, candidate) => sum + candidate.maxMines, 0);
+      if (maxSum !== base.minesNeeded) return;
+      cover.forEach((candidate) => {
+        if (candidate.maxMines === candidate.constraint.minesNeeded) {
+          candidate.outside.forEach((index) => actions.push(action("reveal", index, "cover-upper-bound")));
+        }
+        if (candidate.maxMines === candidate.group.length) {
+          candidate.group.forEach((index) => actions.push(action("flag", index, "cover-upper-bound")));
+        }
+      });
+    });
+  }
+
+  return actions;
+}
+
+function findDisjointCovers(base, candidates) {
+  const covers = [];
+  const targetSize = base.unknowns.length;
+
+  function backtrack(start, chosen, covered) {
+    if (covered.size === targetSize) {
+      covers.push([...chosen]);
+      return;
+    }
+    for (let i = start; i < candidates.length; i += 1) {
+      const candidate = candidates[i];
+      if (candidate.group.some((index) => covered.has(index))) continue;
+      const nextCovered = new Set(covered);
+      candidate.group.forEach((index) => nextCovered.add(index));
+      chosen.push(candidate);
+      backtrack(i + 1, chosen, nextCovered);
+      chosen.pop();
+    }
+  }
+
+  backtrack(0, [], new Set());
+  return covers;
 }
 
 function exactFrontierRule(game) {

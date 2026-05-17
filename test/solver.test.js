@@ -105,6 +105,24 @@ test("overlap-bounds derives mines and safes from partially overlapping constrai
   ]);
 });
 
+test("cover-upper-bound reveals outside cells when upper-bound groups exactly cover a constraint", () => {
+  const game = board(5, 5, 2, [
+    "R H R R R",
+    "R H 1 R R",
+    "R H 2 1 R",
+    "R R H H H",
+    "R R R R R",
+  ]);
+
+  const step = solveStep(game, ["local-count", "subset", "constraint-closure", "overlap-bounds", "cover-upper-bound"]);
+
+  assert.equal(step.rule.id, "cover-upper-bound");
+  assert.deepEqual(actionPairs(step.actions), [
+    ["reveal", 1],
+    ["reveal", 19],
+  ]);
+});
+
 test("global-frontier filters local solutions that cannot use the remaining mine count", () => {
   const game = board(5, 3, 6, [
     "H H H H R",

@@ -37,9 +37,10 @@ Current rule order:
 2. `subset`: one-step subset difference reasoning.
 3. `constraint-closure`: repeatedly derives subset-difference constraints and reuses them.
 4. `overlap-bounds`: uses min/max mine counts across partially overlapping constraints.
-5. `exact-frontier`: enumerates small connected frontier components.
-6. `global-frontier`: filters frontier solutions by the board's remaining mine count when all hidden cells are constrained.
-7. `global-count`: handles remaining mine count extremes.
+5. `cover-upper-bound`: covers one constraint with multiple disjoint upper-bound intersections.
+6. `exact-frontier`: enumerates small connected frontier components.
+7. `global-frontier`: filters frontier solutions by the board's remaining mine count when all hidden cells are constrained.
+8. `global-count`: handles remaining mine count extremes.
 
 ## Seeds And Reload Behavior
 

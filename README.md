@@ -39,6 +39,7 @@ Current rules:
 - Subset reasoning
 - Derived constraint closure
 - Overlap bounds between partially intersecting constraints
+- Covering upper bounds across multiple intersecting constraints
 - Exact frontier enumeration
 - Frontier enumeration filtered by remaining mine count
 - Global remaining mine count extremes
