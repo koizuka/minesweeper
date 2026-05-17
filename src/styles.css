@@ -9,8 +9,15 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#app {
+  height: 100%;
+}
+
 body {
   margin: 0;
+  overflow: hidden;
 }
 
 button,
@@ -25,10 +32,11 @@ input {
   --state-line: #d7dde3;
   --state-ink: #39434d;
   --state-accent: #6b7280;
-  min-height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--state-bg);
+  overflow: hidden;
 }
 
 .state-ready {
@@ -72,6 +80,7 @@ input {
 }
 
 .topbar {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -79,6 +88,9 @@ input {
   padding: 10px 14px;
   background: var(--state-band);
   border-bottom: 1px solid var(--state-line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 h1,
@@ -132,6 +144,7 @@ h1 {
   grid-template-columns: 260px minmax(320px, 1fr) 260px;
   grid-template-areas: "rules board insight";
   min-height: 0;
+  overflow: hidden;
 }
 
 .panel {
@@ -140,6 +153,7 @@ h1 {
   background: var(--state-band);
   border-right: 1px solid var(--state-line);
   overflow: auto;
+  min-height: 0;
 }
 
 .insight {
@@ -181,18 +195,19 @@ h1 {
 .board-wrap {
   grid-area: board;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
   place-items: center;
   align-content: start;
   gap: 14px;
   padding: 16px 20px 20px;
-  overflow: auto;
+  overflow: hidden;
+  min-height: 0;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--state-bg) 78%, white), var(--state-bg));
 }
 
 .status {
-  width: min(100%, calc(var(--cols, 16) * 34px));
+  width: min(100%, calc(var(--cols, 16) * var(--cell-size, 34px) + (var(--cols, 16) - 1) * 2px + 20px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -208,7 +223,14 @@ h1 {
 }
 
 .board {
-  --cell: clamp(24px, min(4.5vw, 4.5vh), 34px);
+  --desktop-sidebars: 520px;
+  --board-chrome-width: 58px;
+  --board-chrome-height: 116px;
+  --cell-by-width: calc((100vw - var(--desktop-sidebars) - var(--board-chrome-width) - (var(--cols) - 1) * 2px) / var(--cols));
+  --cell-by-height: calc((100dvh - 66px - var(--board-chrome-height) - (var(--rows) - 1) * 2px) / var(--rows));
+  --cell-size: clamp(18px, min(var(--cell-by-width), var(--cell-by-height)), 34px);
+  --cell: var(--cell-size);
+  align-self: start;
   display: grid;
   grid-template-columns: repeat(var(--cols), var(--cell));
   grid-template-rows: repeat(var(--rows), var(--cell));
@@ -315,6 +337,16 @@ h1 {
 }
 
 @media (max-width: 920px) {
+  body {
+    overflow: auto;
+  }
+
+  .shell {
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible;
+  }
+
   .topbar {
     align-items: center;
     flex-wrap: wrap;
@@ -339,6 +371,19 @@ h1 {
       "board"
       "insight"
       "rules";
+    overflow: visible;
+  }
+
+  .board-wrap,
+  .panel {
+    overflow: visible;
+  }
+
+  .board {
+    --desktop-sidebars: 0px;
+    --board-chrome-width: 58px;
+    --board-chrome-height: 116px;
+    --cell-size: clamp(22px, min(4.5vw, 4.5vh), 34px);
   }
 
   .panel,
