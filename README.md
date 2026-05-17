@@ -14,6 +14,16 @@ Open:
 http://127.0.0.1:5173/
 ```
 
+## Deploy
+
+Pushes to `master` run CI and deploy the static app to GitHub Pages.
+
+Published URL:
+
+```text
+https://koizuka.github.io/minesweeper/
+```
+
 ## Test
 
 ```sh
