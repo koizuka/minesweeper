@@ -1,8 +1,17 @@
 {
   "name": "minesweeper-spoiled-plus",
   "version": "0.1.0",
-  "private": true,
+  "description": "Minesweeper variant where deterministic solver rules automatically play every provable move.",
   "type": "module",
+  "license": "MIT",
+  "homepage": "https://koizuka.github.io/minesweeper/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koizuka/minesweeper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/koizuka/minesweeper/issues"
+  },
   "scripts": {
     "dev": "python3 -m http.server 5173 --bind 127.0.0.1",
     "test": "node --test"

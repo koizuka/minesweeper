@@ -1,5 +1,8 @@
 # Minesweeper Spoiled+
 
+[![CI](https://github.com/koizuka/minesweeper/actions/workflows/ci.yml/badge.svg)](https://github.com/koizuka/minesweeper/actions/workflows/ci.yml)
+[![Deploy Pages](https://github.com/koizuka/minesweeper/actions/workflows/pages.yml/badge.svg)](https://github.com/koizuka/minesweeper/actions/workflows/pages.yml)
+
 A browser-playable Minesweeper variant where deterministic solver rules automatically play every provable move. The player is left with the remaining guess positions.
 
 ## Run
@@ -55,3 +58,7 @@ Current rules:
 - Global remaining mine count extremes
 
 See `AGENTS.md` for implementation notes and handoff guidance.
+
+## License
+
+MIT
