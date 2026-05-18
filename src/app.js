@@ -1,5 +1,5 @@
-import { applySolverActions, CELL, createGame, LEVELS, remainingMines, revealCell } from "./game.js?v=20260517-3";
-import { analyzeBoard, solveStep, solverRules } from "./solver.js?v=20260517-3";
+import { applySolverActions, CELL, createGame, LEVELS, remainingMines, revealCell } from "./game.js?v=20260518-1";
+import { analyzeBoard, solveStep, solverRules } from "./solver.js?v=20260518-1";
 
 const state = {
   levelId: "intermediate",
@@ -43,13 +43,13 @@ function render() {
         </div>
       </section>
       <section class="workspace">
-        <section class="board-wrap">
+        <section class="board-wrap" style="--cols:${state.game.config.width}; --rows:${state.game.config.height};">
           <div class="status">
             <span>💣 ${remainingMines(state.game)}</span>
             <span>${statusText()}</span>
             <span>${state.game.moves} moves</span>
           </div>
-          <div class="board" style="--cols:${state.game.config.width}; --rows:${state.game.config.height};">
+          <div class="board">
             ${state.game.cells.map(renderCell).join("")}
           </div>
         </section>
